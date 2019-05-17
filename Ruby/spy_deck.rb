@@ -4,6 +4,7 @@ class Deck
 
   def initialize
     @state = (1..52).to_a << 'a' << 'b'
+
     show
   end
 
