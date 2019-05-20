@@ -11,16 +11,6 @@ class Graph
     end
   end
 
-  def add(node)
-    return node if @nodes.include?(node)
-
-    node = Node.new(node) if node.class.name != 'Node'
-
-    @nodes << node
-
-    node
-  end
-
   def append(node, *children)
     node = add(node)
 
@@ -69,6 +59,39 @@ class Graph
     false
   end
 
+  def add(node)
+    return node if @nodes.include?(node)
+
+    node = Node.new(node) if node.class.name != 'Node'
+
+    @nodes << node
+
+    node
+  end
+
+end
+
+class Tree < Graph
+  attr_reader :root
+
+  def initialize(root)
+    @nodes = []
+
+    root = Node.new(root) if root.class.name != 'Node'
+    @root = root
+
+    @nodes << root
+  end
+
+  def append(node, *children)
+    raise 'Must append to existing node' if !@nodes.include?(node)
+
+    children.each do |child|
+      raise "#{child} is already appended to a parent node" if @nodes.include?(child)
+    end
+
+    super
+  end
 end
 
 class Node
@@ -96,7 +119,7 @@ end
 graph = Graph.new
 nodes = (0..8).to_a
 
-nodes = nodes.map { |node| graph.add(node) }
+nodes = nodes.map { |value| graph.append(value) }
 
 graph.append(nodes[0], nodes[1], nodes[8])
 graph.append(nodes[1], nodes[2])
@@ -106,6 +129,19 @@ graph.append(nodes[4], nodes[6])
 graph.append(nodes[5], nodes[4])
 graph.append(nodes[6], nodes[5])
 
-puts graph.bfs(nodes[0], 7).map { |node| node.value }
+nodes = (0..13).to_a
+nodes = nodes.map { |value| Node.new(value) }
+tree = Tree.new(nodes[0])
+
+tree.append(nodes[0], nodes[1], nodes[2], nodes[3])
+tree.append(nodes[1], nodes[4])
+tree.append(nodes[2], nodes[5], nodes[6])
+tree.append(nodes[3], nodes[7], nodes[8])
+tree.append(nodes[4], nodes[9])
+tree.append(nodes[5], nodes[10], nodes[11])
+tree.append(nodes[7], nodes[12])
+tree.append(nodes[8], nodes[13])
+
+puts tree.bfs(nodes[0], 20)
 
 puts ''
