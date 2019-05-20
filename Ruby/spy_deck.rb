@@ -25,6 +25,8 @@ class Deck
   end
 
   def tripple_cut
+    indeces = indeces
+
     part1 = @state[0...indices[0]]
     part2 = @state[indices[0]..indices[1]]
     part3 = @state[indices[1] + 1 ..]
@@ -49,11 +51,8 @@ class Deck
   private
 
   def move(joker)
-    if (start_index = @state.find_index(joker)) == 53
-      index = 1
-    else
-      index = start_index + 1
-    end
+    index = @state.find_index(joker) + 1
+    index = 1 if index == 54
 
     @state.insert(index, @state.delete(joker))
   end
